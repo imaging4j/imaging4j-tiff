@@ -22,4 +22,29 @@
             <url>http://maven.imagej.net/content/groups/public</url>
         </repository>
     </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>${deploy2-id}</id>
+            <url>${deploy2-url}</url>
+        </repository>
+    </distributionManagement>
+
 </project>
