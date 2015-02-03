@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Daniel Alievsky, AlgART Laboratory (http://algart.net)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package net.imaging4j.tiff.helper;
 
 import io.scif.FormatException;
@@ -44,7 +68,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
     public TiffIFDEntry readTiffIFDEntry() throws IOException {
         final TiffIFDEntry result = super.readTiffIFDEntry();
         TiffTools.debug(2, "%s reading IFD entry: %s - %s%n",
-                getClass().getSimpleName(), result, TiffTools.ifdTagName(result.getTag()));
+            getClass().getSimpleName(), result, TiffTools.ifdTagName(result.getTag()));
         return result;
     }
 
@@ -54,7 +78,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
         final IFD result = super.getIFD(offset);
         long t2 = System.nanoTime();
         TiffTools.debug(1, "%s reading IFD at offset %d: %.3f ms%n",
-                getClass().getSimpleName(), offset, (t2 - t1) * 1e-6);
+            getClass().getSimpleName(), offset, (t2 - t1) * 1e-6);
         return result;
     }
 
@@ -106,7 +130,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
         long t2 = TiffTools.DEBUG_LEVEL >= 2 ? System.nanoTime() : 0;
         if (t2 - t1 > 1000000 || count > 1000) {
             TiffTools.debug(2, "Reading %s in %.3f ms, %.1f ns/element%n",
-                    entry, (t2 - t1) * 1e-6, (double) (t2 - t1) / (double) entry.getValueCount());
+                entry, (t2 - t1) * 1e-6, (double) (t2 - t1) / (double) entry.getValueCount());
         }
         return result;
     }
@@ -137,7 +161,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
             for (int i = 0; i < longs.length; i++) {
                 if (optimized[i] != longs[i]) {
                     throw new AssertionError("Different element #" + i + ": 0x"
-                            + Long.toHexString(optimized[i]) + " instead of " + Long.toHexString(longs[i]));
+                        + Long.toHexString(optimized[i]) + " instead of " + Long.toHexString(longs[i]));
                 }
             }
             TiffTools.debug(1, "Testing %s: all O'k%n", entry);
@@ -154,8 +178,8 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
      * A copy of the same private method in TiffParser class.
      */
     static void unpackBytes(
-            final byte[] samples, final int startIndex,
-            final byte[] bytes, final IFD ifd) throws FormatException
+        final byte[] samples, final int startIndex,
+        final byte[] bytes, final IFD ifd) throws FormatException
     {
         final boolean planar = ifd.getPlanarConfiguration() == 2;
 
@@ -201,8 +225,8 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
         // Wed Aug 5 19:04:59 BST 2009
         // Chris Allan <callan@glencoesoftware.com>
         if ((bps8 || bps16) && bytes.length <= samples.length && nChannels == 1 &&
-                photoInterp != PhotoInterp.WHITE_IS_ZERO &&
-                photoInterp != PhotoInterp.CMYK && photoInterp != PhotoInterp.Y_CB_CR)
+            photoInterp != PhotoInterp.WHITE_IS_ZERO &&
+            photoInterp != PhotoInterp.CMYK && photoInterp != PhotoInterp.Y_CB_CR)
         {
             System.arraycopy(bytes, 0, samples, 0, bytes.length);
             return;
@@ -215,7 +239,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
 
         int skipBits = (int) (8 - ((imageWidth * bps0 * nChannels) % 8));
         if (skipBits == 8 ||
-                (bytes.length * 8 < bps0 * (nChannels * imageWidth + imageHeight)))
+            (bytes.length * 8 < bps0 * (nChannels * imageWidth + imageHeight)))
         {
             skipBits = 0;
         }
@@ -230,7 +254,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
         }
         final int[] subsampling = ifd.getIFDIntArray(IFD.Y_CB_CR_SUB_SAMPLING);
         final TiffRational[] coefficients =
-                (TiffRational[]) ifd.getIFDValue(IFD.Y_CB_CR_COEFFICIENTS);
+            (TiffRational[]) ifd.getIFDValue(IFD.Y_CB_CR_COEFFICIENTS);
         if (coefficients != null) {
             lumaRed = coefficients[0].floatValue();
             lumaGreen = coefficients[1].floatValue();
@@ -260,7 +284,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
                         // bits per sample is not a multiple of 8
 
                         if ((channel == 0 && photoInterp == PhotoInterp.RGB_PALETTE) ||
-                                (photoInterp != PhotoInterp.CFA_ARRAY && photoInterp != PhotoInterp.RGB_PALETTE))
+                            (photoInterp != PhotoInterp.CFA_ARRAY && photoInterp != PhotoInterp.RGB_PALETTE))
                         {
                             value = bb.getBits(bps0) & 0xffff;
                             if ((ndx % imageWidth) == imageWidth - 1) {
@@ -272,14 +296,14 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
                     }
 
                     if (photoInterp == PhotoInterp.WHITE_IS_ZERO ||
-                            photoInterp == PhotoInterp.CMYK)
+                        photoInterp == PhotoInterp.CMYK)
                     {
                         value = maxValue - value;
                     }
 
                     if (outputIndex + numBytes <= samples.length) {
                         DataTools.unpackBytes(value, samples, outputIndex, numBytes,
-                                littleEndian);
+                            littleEndian);
                     }
                 } else {
                     // unpack YCbCr samples; these need special handling, as each of
@@ -307,7 +331,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
                             final int red = (int) (cr * (2 - 2 * lumaRed) + y);
                             final int blue = (int) (cb * (2 - 2 * lumaBlue) + y);
                             final int green =
-                                    (int) ((y - lumaBlue * blue - lumaRed * red) / lumaGreen);
+                                (int) ((y - lumaBlue * blue - lumaRed * red) / lumaGreen);
 
                             samples[idx] = (byte) (red & 0xff);
                             samples[nSamples + idx] = (byte) (green & 0xff);

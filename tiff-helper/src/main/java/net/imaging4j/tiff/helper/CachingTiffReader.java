@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Daniel Alievsky, AlgART Laboratory (http://algart.net)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package net.imaging4j.tiff.helper;
 
 import io.scif.FormatException;
@@ -26,7 +50,7 @@ import java.util.*;
  */
 public final class CachingTiffReader {
     private static final long DEFAULT_MAX_CACHING_MEMORY = Math.max(0, Long.getLong(
-            "net.imaging4j.tiff.helper.defaultMaxCachingMemory", 16 * 1048576L));
+        "net.imaging4j.tiff.helper.defaultMaxCachingMemory", 16 * 1048576L));
 
     private final File file;
     private final SCIFIO scifio;
@@ -45,23 +69,23 @@ public final class CachingTiffReader {
     private final Object fileLock = new Object();
 
     public CachingTiffReader(Context context, File file)
-            throws IOException, FormatException
+        throws IOException, FormatException
     {
         this(context, file, (byte) 0xFF, DEFAULT_MAX_CACHING_MEMORY);
     }
 
     public CachingTiffReader(Context context, File file, byte transparencyFiller)
-            throws IOException, FormatException
+        throws IOException, FormatException
     {
         this(context, file, transparencyFiller, DEFAULT_MAX_CACHING_MEMORY);
     }
 
     public CachingTiffReader(
-            Context context,
-            File file,
-            byte transparencyFiller,
-            long maxCachingMemory)
-            throws IOException, FormatException
+        Context context,
+        File file,
+        byte transparencyFiller,
+        long maxCachingMemory)
+        throws IOException, FormatException
     {
         if (maxCachingMemory < 0) {
             throw new IllegalArgumentException("Negative maxCachingMemory");
@@ -81,11 +105,11 @@ public final class CachingTiffReader {
         this.ifdList = parser.getIFDs();
         long t4 = System.nanoTime();
         TiffTools.debug(1, "%s instantiating (%s%s): "
-                        + "%.3f ms (%.3f opening files + %.3f creating parser + %.3f reading IFDs)%n",
-                getClass().getSimpleName(),
-                randomAccessInputStream.isLittleEndian() ? "little-endian" : "big-endian",
-                parser.isBigTiff() ? ", Big-TIFF" : "",
-                (t4 - t1) * 1e-6, (t2 - t1) * 1e-6, (t3 - t2) * 1e-6, (t4 - t3) * 1e-6);
+                + "%.3f ms (%.3f opening files + %.3f creating parser + %.3f reading IFDs)%n",
+            getClass().getSimpleName(),
+            randomAccessInputStream.isLittleEndian() ? "little-endian" : "big-endian",
+            parser.isBigTiff() ? ", Big-TIFF" : "",
+            (t4 - t1) * 1e-6, (t2 - t1) * 1e-6, (t3 - t2) * 1e-6, (t4 - t3) * 1e-6);
         this.ifdCaching = new boolean[ifdList.size()];
         Arrays.fill(ifdCaching, true);
         this.transparencyFiller = transparencyFiller;
@@ -140,14 +164,14 @@ public final class CachingTiffReader {
     // though may lead to unfilled (zero) values.
     // However, must be x>=0 and y>=0.
     public byte[] readSamples(
-            byte[] result,
-            final boolean[] opaque,
-            final int ifdIndex,
-            final int x,
-            final int y,
-            final int width,
-            final int height)
-            throws FormatException, IOException
+        byte[] result,
+        final boolean[] opaque,
+        final int ifdIndex,
+        final int x,
+        final int y,
+        final int width,
+        final int height)
+        throws FormatException, IOException
     {
         final IFD ifd = ifdList.get(ifdIndex);
         final int bandCount = ifd.getSamplesPerPixel();
@@ -158,7 +182,7 @@ public final class CachingTiffReader {
             final int maxPixelCount = Integer.MAX_VALUE / bytesPerBand / bandCount;
             if ((long) width * (long) height > maxPixelCount) {
                 throw new IllegalArgumentException("Too large rectangle "
-                        + x + ".." + (x + width) + "x" + y + ".." + (y + height));
+                    + x + ".." + (x + width) + "x" + y + ".." + (y + height));
             }
             result = new byte[width * height * bytesPerBand * bandCount];
         }
@@ -168,10 +192,10 @@ public final class CachingTiffReader {
         final int effectiveChannels = planarConfiguration == 2 ? 1 : bandCount;
         if (opaque != null && result.length != opaque.length * bytesPerSample * bandCount) {
             throw new IllegalArgumentException("Result and opaque lengths mismatch: " + result.length
-                    + " != " + opaque.length + "*" + bytesPerSample + "*" + bandCount);
+                + " != " + opaque.length + "*" + bytesPerSample + "*" + bandCount);
         }
         if (x < 0 || y < 0
-                || (long) x + (long) width > Integer.MAX_VALUE || (long) y + (long) height > Integer.MAX_VALUE)
+            || (long) x + (long) width > Integer.MAX_VALUE || (long) y + (long) height > Integer.MAX_VALUE)
         {
             throw new IllegalArgumentException("Requested area is out of 0..2^31 ranges");
         }
@@ -184,14 +208,14 @@ public final class CachingTiffReader {
             tileHeight = height;
         }
         if (tileWidth > Integer.MAX_VALUE || tileHeight > Integer.MAX_VALUE
-                || tileWidth * tileHeight > Integer.MAX_VALUE
-                || tileWidth * tileHeight * (long) bytesPerSample > Integer.MAX_VALUE
-                || tileWidth * tileHeight * (long) bytesPerSample * (long) bandCount > Integer.MAX_VALUE)
+            || tileWidth * tileHeight > Integer.MAX_VALUE
+            || tileWidth * tileHeight * (long) bytesPerSample > Integer.MAX_VALUE
+            || tileWidth * tileHeight * (long) bytesPerSample * (long) bandCount > Integer.MAX_VALUE)
         {
             throw new IllegalArgumentException("Too large TIFF tiles: "
-                    + "tileWidth * tileHeight * bytes per sample * samples per pixel = "
-                    + tileWidth + " * " + tileHeight + " * " + bytesPerSample + " * " + bandCount + " >= 2^31"
-                    + " (image description " + ifd.get(IFD.IMAGE_DESCRIPTION) + ")");
+                + "tileWidth * tileHeight * bytes per sample * samples per pixel = "
+                + tileWidth + " * " + tileHeight + " * " + bytesPerSample + " * " + bandCount + " >= 2^31"
+                + " (image description " + ifd.get(IFD.IMAGE_DESCRIPTION) + ")");
         }
         final long numTileRows = ifd.getTilesPerColumn();
         final long numTileCols = ifd.getTilesPerRow();
@@ -275,48 +299,49 @@ public final class CachingTiffReader {
     }
 
     public Object readSamplesToJavaArray(
-            final int ifdIndex,
-            final int x,
-            final int y,
-            final int width,
-            final int height,
-            Class<?> requiredElementType,
-            Integer requiredBandCount)
-            throws FormatException, IOException
+        final int ifdIndex,
+        final int x,
+        final int y,
+        final int width,
+        final int height,
+        Class<?> requiredElementType,
+        Integer requiredBandCount)
+        throws FormatException, IOException
     {
         return readSamplesToJavaArray(null, ifdIndex, x, y, width, height, requiredElementType, requiredBandCount);
     }
+
     public Object readSamplesToJavaArray(
-            final boolean[] opaque,
-            final int ifdIndex,
-            final int x,
-            final int y,
-            final int width,
-            final int height,
-            Class<?> requiredElementType,
-            Integer requiredBandCount)
-            throws FormatException, IOException
+        final boolean[] opaque,
+        final int ifdIndex,
+        final int x,
+        final int y,
+        final int width,
+        final int height,
+        Class<?> requiredElementType,
+        Integer requiredBandCount)
+        throws FormatException, IOException
     {
         final IFD ifd = getIFDByIndex(ifdIndex);
         if (requiredBandCount != null && ifd.getSamplesPerPixel() != requiredBandCount) {
             throw new FormatException("Number of bands mismatch: expected " + requiredBandCount
-                    + " bands (samples per pixel), but IFD image #" + ifdIndex + " contains " + ifd.getSamplesPerPixel()
-                    + " bands; image description " + ifd.get(IFD.IMAGE_DESCRIPTION));
+                + " bands (samples per pixel), but IFD image #" + ifdIndex + " contains " + ifd.getSamplesPerPixel()
+                + " bands; image description " + ifd.get(IFD.IMAGE_DESCRIPTION));
         }
         if (requiredElementType != null && TiffTools.javaElementType(ifd.getPixelType()) != requiredElementType) {
             throw new FormatException("Element type mismatch: expected " + requiredElementType
-                    + "[] elements, but some IFD image contains " + TiffTools.javaElementType(ifd.getPixelType())
-                    + "[] elements; image description " + ifd.get(IFD.IMAGE_DESCRIPTION));
+                + "[] elements, but some IFD image contains " + TiffTools.javaElementType(ifd.getPixelType())
+                + "[] elements; image description " + ifd.get(IFD.IMAGE_DESCRIPTION));
         }
         final int pixelType = ifd.getPixelType();
         byte[] bytes = readSamples(null, opaque, ifdIndex, x, y, width, height);
         bytes = TiffTools.interleaveSamples(bytes, width * height, ifd);
         return DataTools.makeDataArray(
-                bytes,
-                Math.max(1, FormatTools.getBytesPerPixel(pixelType)),
-                // - "max" to be on the safe side
-                FormatTools.isFloatingPoint(pixelType),
-                ifd.isLittleEndian());
+            bytes,
+            Math.max(1, FormatTools.getBytesPerPixel(pixelType)),
+            // - "max" to be on the safe side
+            FormatTools.isFloatingPoint(pixelType),
+            ifd.isLittleEndian());
     }
 
     public Tile getTile(TileIndex tileIndex) {
@@ -370,9 +395,9 @@ public final class CachingTiffReader {
                 final boolean littleEndian = ifd.isLittleEndian();
                 final TiffCompression compression = ifd.getCompression();
                 final CodecOptions codecOptions =
-                        compression == TiffCompression.JPEG_2000 || compression == TiffCompression.JPEG_2000_LOSSY ?
-                                compression.getCompressionCodecOptions(ifd, parser.getCodecOptions()) :
-                                compression.getCompressionCodecOptions(ifd);
+                    compression == TiffCompression.JPEG_2000 || compression == TiffCompression.JPEG_2000_LOSSY ?
+                        compression.getCompressionCodecOptions(ifd, parser.getCodecOptions()) :
+                        compression.getCompressionCodecOptions(ifd);
                 codecOptions.interleaved = true;
                 codecOptions.littleEndian = littleEndian;
 
@@ -431,8 +456,8 @@ public final class CachingTiffReader {
 
                 codecOptions.maxBytes = Math.max(size, tileBytes.length);
                 codecOptions.ycbcr =
-                        ifd.getPhotometricInterpretation() == PhotoInterp.Y_CB_CR &&
-                                ifd.getIFDIntValue(IFD.Y_CB_CR_SUB_SAMPLING) == 1 && parser.ycbcrCorrection;
+                    ifd.getPhotometricInterpretation() == PhotoInterp.Y_CB_CR &&
+                        ifd.getIFDIntValue(IFD.Y_CB_CR_SUB_SAMPLING) == 1 && parser.ycbcrCorrection;
 
                 if (jpegTable != null) {
                     byte[] q = new byte[jpegTable.length + tileBytes.length - 4];
@@ -454,11 +479,11 @@ public final class CachingTiffReader {
                             int[] samples = new int[result.length / bytesPerSample];
                             for (int i = 0; i < samples.length; i++) {
                                 samples[i] =
-                                        DataTools.bytesToInt(result, i * realBytes, realBytes, littleEndian);
+                                    DataTools.bytesToInt(result, i * realBytes, realBytes, littleEndian);
                             }
                             for (int i = 0; i < samples.length; i++) {
                                 DataTools.unpackBytes(
-                                        samples[i], result, i * bytesPerSample, bytesPerSample, littleEndian);
+                                    samples[i], result, i * bytesPerSample, bytesPerSample, littleEndian);
                             }
                         }
                     }
@@ -472,7 +497,7 @@ public final class CachingTiffReader {
                 }
                 if (fillerOnly) {
                     TiffTools.debug(2, "Transparent tile detected and recognized as empty (stored in cache): %s%n",
-                            tileIndex);
+                        tileIndex);
                     noData = true;
                     return null;
                 }
@@ -489,8 +514,8 @@ public final class CachingTiffReader {
                 byte[] data = cachedData.get();
                 if (data == null) {
                     TiffTools.debug(1,
-                            "CACHED tile is freed by garbage collector due to global insufficiency of memory: %s%n",
-                            tileIndex);
+                        "CACHED tile is freed by garbage collector due to global insufficiency of memory: %s%n",
+                        tileIndex);
                 }
                 return data;
             }
@@ -511,10 +536,10 @@ public final class CachingTiffReader {
                         tile.cachedData = null;
                         Runtime runtime = Runtime.getRuntime();
                         TiffTools.debug(2, "Tile removed from cache "
-                                        + "(cache memory limit %.1f MB exceeded, used memory %.1f MB): %s%n",
-                                maxCachingMemory / 1048576.0,
-                                (runtime.totalMemory() - runtime.freeMemory()) / 1048576.0,
-                                tile.tileIndex
+                                + "(cache memory limit %.1f MB exceeded, used memory %.1f MB): %s%n",
+                            maxCachingMemory / 1048576.0,
+                            (runtime.totalMemory() - runtime.freeMemory()) / 1048576.0,
+                            tile.tileIndex
                         );
                     }
                 }
