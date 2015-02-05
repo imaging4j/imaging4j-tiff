@@ -1,0 +1,59 @@
+Проверяю лицензионную чистоту исходников и всех библиотек, которые оно тянет за собой: что каждый java файл содержит подстроку "Redistribution and use in source and binary forms, with or without" (начало текста лицензии). Убеждаюсь, что число файлов с такой подстрокой равно общему числу java-файлов и визуально проверуяю один-два файлика, что там и правда она (FreeBSD-лицензия).
+
+Следующие файлы соответствуют FreeBSD:
+Все файлы собственно SCIFIO (полная копия scifio-scifio-0.11.0.zip, взятого из https://github.com/scifio/scifio)
+jai_imageio-1.0.1.jar           (SCIFIO fork of the Java Advanced Imaging Image I/O Tools API Core)
+imglib2-2.0.0-beta-26.jar       (https://github.com/imglib/imglib)
+imglib2-meta-2.0.0-beta-26.jar  (https://github.com/imglib/imglib/tree/master/meta)
+scijava-common-2.14.0.jar       (http://www.scijava.org/)
+
+С остальным хуже.
+eventbus-1.4.jar (http://mvnrepository.com/artifact/org.bushe/eventbus/1.4, URL из POM неадекватны) 
+  - судя по pom-файлу, тут Apache License, Version 2.0. Однако ВНИМАНИЕ: они недостаточно аккуратны, и не все исходные файлы содержат вначале упоминание лицензии. Надеюсь, это не страшно.
+mapdb-0.9.7.jar (http://www.mapdb.org/, https://github.com/jankotek/mapdb)
+  - аналогично: судя по pom-файлу, тут Apache License, Version 2.0, но не все исходные файлы содержат лицензию.
+gentyref-1.1.0.jar (https://code.google.com/p/gentyref/)
+  - судя по pom-файлу, тут Apache License, Version 2.0. Однако здесь авторы ВООБЩЕ не позаботились вписать текст лицензии в исходники. Исходников-то всего 8 файлов на 30 килобайт, какой-то нелепый "довесок". (Live успешно работает и без этого JAR)
+testng-5.12.1.jar (http://testng.org/, https://github.com/cbeust/testng)
+  - аналогично: судя по pom-файлу, тут Apache License, Version 2.0, ВООБЩЕ нет текста лицензии в исходниках (Live успешно работает и без этого JAR)
+junit-4.8.1.jar 
+  - судя по pom-файду, тут Common Public License Version 1.0, но ВООБЩЕ нет текста лицензии в исходниках (Live успешно работает и без этого JAR)
+
+udunits-4.3.18.jar - тут, наоборот, нет лицензии в pom. Зато, к счастью, среди исходников лежит файл LICENSE с неким своеобразным текстом. (Live успешно работает и без этого JAR)
+Этот текст повторен в исходниках, правда, за вычетом 7 файликов, сгенерированных роботом (так написано в комментарии). Вот текст:
+
+Copyright 1999 University Corporation for Atmospheric Research/Unidata
+
+Portions of this software were developed by the Unidata Program at the
+University Corporation for Atmospheric Research.
+
+Access and use of this software shall impose the following obligations
+and understandings on the user. The user is granted the right, without
+any fee or cost, to use, copy, modify, alter, enhance and distribute
+this software, and any derivative works thereof, and its supporting
+documentation for any purpose whatsoever, provided that this entire
+notice appears in all copies of the software, derivative works and
+supporting documentation. Further, UCAR requests that the user credit
+UCAR/Unidata in any publications that result from the use of this
+software or in any product that includes this software. The names UCAR
+and/or Unidata, however, may not be used in any advertising or publicity
+to endorse or promote any products or commercial entity unless specific
+written permission is obtained from UCAR/Unidata. The user also
+understands that UCAR/Unidata is not obligated to provide the user with
+any support, consulting, training or assistance of any kind with regard
+to the use, operation and performance of this software nor to provide
+the user with any updates, revisions, new versions or "bug fixes."
+
+THIS SOFTWARE IS PROVIDED BY UCAR/UNIDATA "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL UCAR/UNIDATA BE LIABLE FOR ANY SPECIAL,
+INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
+FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
+
+(я потом нашел его в интернете: http://www.unidata.ucar.edu/software/netcdf/copyright.html)
+
+args4j-2.0.25.jar (http://args4j.kohsuke.org/license.html, подключается в модуле SCIFIO Tools, наверно, для тестирования) 
+  - СОВСЕМ ПЛОХО: нет лицензии ни в pom, ни в текстах исходников (Live успешно работает и без этого JAR). Но лицензия есть на сайте: http://args4j.kohsuke.org/license.html (это MIT)
