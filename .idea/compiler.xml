@@ -25,5 +25,8 @@
         <module name="tiff-helper" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="tiff-helper" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
