@@ -62,8 +62,8 @@ public class TiffInfoTest {
                 reader.getParser().getStream().isLittleEndian() ? "little" : "big");
         for (int k = 0; k < ifdCount; k++) {
             final IFD ifd = reader.getIFDByIndex(k);
-            System.out.printf("%n IFD #%d/%d (offset %d) %s[%dx%d]:%n%s",
-                    k + 1, ifdCount, offsets[k],
+            System.out.printf("%n IFD #%d/%d (offset %d=0x%X) %s[%dx%d]:%n%s",
+                    k + 1, ifdCount, offsets[k], offsets[k],
                     TiffTools.javaElementType(ifd.getPixelType()).getSimpleName(),
                     ifd.getImageWidth(),
                     ifd.getImageLength(),
