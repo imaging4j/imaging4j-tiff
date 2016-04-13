@@ -52,8 +52,8 @@
 
     <distributionManagement>
         <repository>
-            <id>${deploy2-id}</id>
-            <url>${deploy2-url}</url>
+            <id>${deploy2or-id}</id>
+            <url>${deploy2or-url}</url>
         </repository>
     </distributionManagement>
 
