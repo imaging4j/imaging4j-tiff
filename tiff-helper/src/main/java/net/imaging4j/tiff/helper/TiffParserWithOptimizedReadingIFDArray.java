@@ -77,7 +77,7 @@ class TiffParserWithOptimizedReadingIFDArray extends TiffParser {
         long t1 = System.nanoTime();
         final IFD result = super.getIFD(offset);
         long t2 = System.nanoTime();
-        TiffTools.debug(1, "%s reading IFD at offset %d: %.3f ms%n",
+        TiffTools.debug(2, "%s reading IFD at offset %d: %.3f ms%n",
             getClass().getSimpleName(), offset, (t2 - t1) * 1e-6);
         return result;
     }
