@@ -104,7 +104,7 @@ public final class CachingTiffReader {
         long t3 = System.nanoTime();
         this.ifdList = parser.getIFDs();
         long t4 = System.nanoTime();
-        TiffTools.debug(1, "%s instantiating (%s%s): "
+        TiffTools.debug(2, "%s instantiating (%s%s): "
                 + "%.3f ms (%.3f opening files + %.3f creating parser + %.3f reading IFDs)%n",
             getClass().getSimpleName(),
             randomAccessInputStream.isLittleEndian() ? "little-endian" : "big-endian",
