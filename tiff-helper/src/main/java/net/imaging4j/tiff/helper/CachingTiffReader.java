@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Daniel Alievsky, AlgART Laboratory (http://algart.net)
+ * Copyright (c) 2014-2017 Daniel Alievsky, AlgART Laboratory (http://algart.net)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ import java.util.*;
  */
 public final class CachingTiffReader {
     private static final long DEFAULT_MAX_CACHING_MEMORY = Math.max(0, Long.getLong(
-        "net.imaging4j.tiff.helper.defaultMaxCachingMemory", 16 * 1048576L));
+        "net.imaging4j.tiff.helper.defaultMaxCachingMemory", 64 * 1048576L));
 
     private final File file;
     private final SCIFIO scifio;
